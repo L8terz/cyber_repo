@@ -1,11 +1,38 @@
 # Security Architecture Hub — Project Context
 
 ## Purpose
-A personal security architecture study hub built with [Astro](https://astro.build). No manual build needed — push to `main` and GitHub Actions deploys automatically.
+A personal security architecture study hub built with [Astro](https://astro.build). Covers NIST CSF/RMF, SABSA/TOGAF, Zero Trust/SASE, and Cloud Security. Push to `main` and GitHub Actions deploys automatically to GitHub Pages.
+
+**Live site:** https://L8terz.github.io/cyber_repo
+
+---
+
+## Session History
+
+### Session 1 — Initial Build
+- Built a single-file vanilla HTML/CSS/JS SPA (`index.html`, ~1600 lines)
+- Dashboard with live RSS news feed (CISA, Krebs, Dark Reading, SANS)
+- Resource library with 28 curated references across 4 framework domains
+- Study progress tracker (20 topics, persisted in localStorage)
+- Personal notes system (per-resource, persisted in localStorage)
+- TOGAF Explorer with 3 interactive views: ADM wheel (SVG), Control Linkage force graph (Canvas), Framework Matrix
+- Embedded guide content for NIST, SABSA/TOGAF, Zero Trust/SASE, Cloud Security
+
+### Session 2 — Modular Refactor + Astro Migration
+- **Modular refactor:** broke 1600-line monolith into separated CSS and JS modules (`assets/css/styles.css`, `assets/js/*.js`)
+- **Astro migration:** converted project to Astro static site generator
+  - Guide content moved from embedded raw HTML → clean **Markdown files** (`src/content/guides/`)
+  - Astro renders Markdown to HTML at build time — no runtime fetch needed
+  - All JS logic preserved unchanged in `public/js/`
+  - GitHub Actions workflow added for automatic deploy on every push to `main`
+  - Node.js installed via Homebrew to support Astro build tooling
+- **GitHub:** repo live at `https://github.com/L8terz/cyber_repo`
+
+---
 
 ## Project Structure
 ```
-cyber/
+cyber_repo/
 ├── src/
 │   ├── pages/
 │   │   └── index.astro          # Main app shell — sidebar, all pages, imports guides
@@ -30,7 +57,7 @@ cyber/
 │       ├── news.js              # loadNews (RSS via rss2json API)
 │       ├── togaf.js             # ADM wheel, force graph, matrix table
 │       └── app.js               # Bootstrap init
-├── astro.config.mjs             # ← UPDATE site + base to match your GitHub repo
+├── astro.config.mjs             # site + base configured for L8terz/cyber_repo
 ├── package.json
 └── .github/
     └── workflows/
@@ -42,15 +69,15 @@ cyber/
 ## How to Update Content
 
 ### Edit a guide (most common task)
-Open any file in `src/content/guides/` and edit the Markdown directly. Standard Markdown syntax:
+Open any file in `src/content/guides/` and edit the Markdown directly:
 - `## Heading` for sections
 - `| Col | Col |` for tables
-- `- item` for lists
-- `> text` for callout blocks
+- `- item` for bullet lists
+- `> text` for callout/tip blocks
 - `**bold**` for emphasis
 
 ### Add a new guide
-1. Create `src/content/guides/newguide.md` with this frontmatter at the top:
+1. Create `src/content/guides/newguide.md` with this frontmatter:
    ```md
    ---
    title: Your Guide Title
@@ -66,7 +93,7 @@ Open any file in `src/content/guides/` and edit the Markdown directly. Standard 
      <span class="icon">🔐</span> Your Guide Name
    </div>
    ```
-3. Push — it auto-deploys.
+3. Commit and push — GitHub Actions builds and deploys automatically.
 
 ### Add a new library resource
 Open `public/js/data.js`, find `const LIBRARY_DATA`, and add to the relevant framework's `resources` array:
@@ -85,18 +112,24 @@ Open `src/styles/global.css`. CSS variables (colours, spacing) are at the top un
 
 ---
 
-## GitHub Setup — One-time configuration
+## Everyday GitHub Workflow
 
-**Before first deploy**, update `astro.config.mjs` with your GitHub details:
-```js
-site: 'https://YOUR_GITHUB_USERNAME.github.io',
-base: '/YOUR_REPO_NAME',
+```bash
+# 1. Make your edits (guides, data, styles)
+# 2. In VS Code Source Control panel:
+#    - Click + to stage all changes
+#    - Type a commit message
+#    - Click Commit
+#    - Click Sync Changes (circular arrow)
+# That's it — GitHub Actions deploys within ~60 seconds
 ```
 
-Then in your GitHub repo → **Settings** → **Pages**:
-- Source: **GitHub Actions** (not "Deploy from branch")
-
-After that, every `git push` to `main` triggers a build and live deploy automatically.
+Or via terminal:
+```bash
+git add .
+git commit -m "Your message here"
+git push
+```
 
 ---
 
@@ -104,8 +137,8 @@ After that, every `git push` to `main` triggers a build and live deploy automati
 
 ```bash
 npm install        # first time only
-npm run dev        # starts local server at http://localhost:4321
-npm run build      # build to dist/ folder (GitHub Actions does this automatically)
+npm run dev        # live preview at http://localhost:4321
+npm run build      # test production build (GitHub Actions does this automatically)
 ```
 
 ---
@@ -113,7 +146,7 @@ npm run build      # build to dist/ folder (GitHub Actions does this automatical
 ## Technical Notes
 
 ### How guides work
-Markdown files in `src/content/guides/` are rendered to HTML at **build time** by Astro. The rendered HTML is injected into hidden `<div id="guide-data-*">` elements in the page. The `openGuide()` JavaScript function reads from these divs at runtime — same as before, but now the source is clean Markdown instead of raw HTML.
+Markdown files in `src/content/guides/` are rendered to HTML at **build time** by Astro. The rendered HTML is injected into hidden `<div id="guide-data-*">` elements. The `openGuide()` JS function reads these divs at runtime — same behaviour as before, but the source is now clean Markdown instead of raw HTML.
 
 ### localStorage keys
 | Key | Contents |
@@ -122,11 +155,11 @@ Markdown files in `src/content/guides/` are rendered to HTML at **build time** b
 | `secarch_progress` | `{ topicId: true }` |
 
 ### News feeds (via rss2json.com free API)
-Defined in `public/js/data.js` under `RSS_FEEDS`. Add or remove feeds there.
+Defined in `public/js/data.js` under `RSS_FEEDS`. Add or remove feeds there. Requires internet connection; fails gracefully if offline.
 
 ### Known constraints
-- The rss2json news feed requires an internet connection; fails gracefully if offline
-- The force graph runs a continuous `requestAnimationFrame` loop while active
+- The force graph runs a continuous `requestAnimationFrame` loop while the Control Linkage view is active
+- `fetch()` on `file://` protocol is blocked — not an issue since the site is served via GitHub Pages
 
 ---
 
@@ -145,7 +178,7 @@ Defined in `public/js/data.js` under `RSS_FEEDS`. Add or remove feeds there.
 - [ ] Add search across guide content
 - [ ] Bookmarking / favourites for library resources
 - [ ] Export notes to PDF or markdown
-- [ ] Add a glossary page
+- [ ] Add a glossary page (common security architecture terms and acronyms)
 - [ ] Expand TOGAF control linkage graph with more capability nodes
 - [ ] Add a threat modelling reference section (STRIDE, PASTA, LINDDUN)
 - [ ] Dark mode toggle
