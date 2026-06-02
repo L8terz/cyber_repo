@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html><body>
+<div id="guide-body">
+<h1>☁️ Cloud Security Architecture</h1>
+<p><em>Security design patterns, controls, and posture management across AWS, Azure, and GCP.</em></p>
+
+<h2>Cloud Changes the Architecture Problem</h2>
+<p>Cloud adoption shifts the security model in fundamental ways: the attack surface is elastic (grows and shrinks dynamically), the perimeter is API-defined (not physical), infrastructure is code (configuration is a security artifact), and the shared responsibility boundary creates accountability gaps if not understood clearly. Cloud security architecture is about designing controls that work <em>with</em> the cloud operating model, not against it.</p>
+
+<h2>Shared Responsibility Model</h2>
+<p>The single most important concept in cloud security. Every cloud provider operates on a shared responsibility model — they secure the cloud, you secure what you put in it.</p>
+
+<table>
+<tr><th>Responsibility</th><th>IaaS</th><th>PaaS</th><th>SaaS</th></tr>
+<tr><td>Physical infrastructure</td><td>CSP</td><td>CSP</td><td>CSP</td></tr>
+<tr><td>Hypervisor / host OS</td><td>CSP</td><td>CSP</td><td>CSP</td></tr>
+<tr><td>Network controls</td><td>Shared</td><td>CSP</td><td>CSP</td></tr>
+<tr><td>Guest OS / runtime</td><td>Customer</td><td>CSP</td><td>CSP</td></tr>
+<tr><td>Application code</td><td>Customer</td><td>Customer</td><td>CSP</td></tr>
+<tr><td>Identity & access</td><td>Customer</td><td>Customer</td><td>Shared</td></tr>
+<tr><td>Data classification</td><td>Customer</td><td>Customer</td><td>Customer</td></tr>
+<tr><td>Data encryption</td><td>Customer</td><td>Shared</td><td>Shared</td></tr>
+</table>
+
+<blockquote>
+<p><strong>Architect's Trap:</strong> The most common cloud security failure is misunderstanding responsibility boundaries. "The cloud provider handles security" is always partially wrong. You always own identity, data classification, and encryption key management.</p>
+</blockquote>
+
+<h2>CSA Cloud Controls Matrix (CCM v4)</h2>
+<p>The Cloud Security Alliance's CCM is the de facto control framework for cloud security. 197 controls across 17 domains, with cross-references to major compliance frameworks.</p>
+
+<table>
+<tr><th>Domain</th><th>Coverage</th></tr>
+<tr><td>A&A — Audit & Assurance</td><td>Third-party audits, assessment planning</td></tr>
+<tr><td>AIS — Application Security</td><td>SDLC, secure coding, vulnerability management</td></tr>
+<tr><td>BCR — Business Continuity</td><td>Availability, DR planning, RTO/RPO</td></tr>
+<tr><td>CCC — Change Control</td><td>Change management, quality assurance</td></tr>
+<tr><td>CEK — Cryptography & Key Mgmt</td><td>Encryption, key lifecycle, HSM use</td></tr>
+<tr><td>DCS — Datacenter Security</td><td>Physical security (CSP responsibility, but verify)</td></tr>
+<tr><td>DSP — Data Security & Privacy</td><td>Classification, handling, retention, privacy</td></tr>
+<tr><td>GRC — Governance, Risk, Compliance</td><td>Policy, risk management, third-party risk</td></tr>
+<tr><td>HRS — Human Resources</td><td>Personnel controls, background checks, training</td></tr>
+<tr><td>IAM — Identity & Access Management</td><td>IAM policies, MFA, privileged access</td></tr>
+<tr><td>IPY — Interoperability & Portability</td><td>API standards, data portability, vendor lock-in</td></tr>
+<tr><td>IVS — Infrastructure & Virtualization</td><td>Network security, segmentation, hardening</td></tr>
+<tr><td>LOG — Logging & Monitoring</td><td>Audit logs, SIEM integration, alerting</td></tr>
+<tr><td>SEF — Security Incident Management</td><td>Incident response, eDiscovery</td></tr>
+<tr><td>STA — Supply Chain</td><td>Third-party risk, SBOM, CSP assessments</td></tr>
+<tr><td>TVM — Threat & Vulnerability Mgmt</td><td>Vulnerability scanning, pen testing, patching</td></tr>
+<tr><td>UEM — Universal Endpoint Management</td><td>Device management, mobile security</td></tr>
+</table>
+
+<h2>Cloud Security Architecture Patterns</h2>
+<h3>Multi-Account / Landing Zone Architecture</h3>
+<p>Enterprise cloud deployments should use separate accounts/subscriptions per environment and workload type. The AWS Organizations / Azure Management Groups model provides:</p>
+<ul>
+<li><strong>Blast radius containment</strong> — a compromised workload account cannot access security tooling accounts</li>
+<li><strong>Policy inheritance</strong> — Service Control Policies (SCPs) or Azure Policy enforce guardrails across the estate</li>
+<li><strong>Centralized logging</strong> — all CloudTrail/Activity Logs aggregated to a dedicated log archive account</li>
+<li><strong>Security tooling isolation</strong> — GuardDuty, Security Hub, Defender for Cloud operate from separate accounts</li>
+</ul>
+
+<h3>Hub-and-Spoke Network Architecture</h3>
+<p>The most common cloud network security pattern: a central "hub" VPC/VNet contains shared security services (firewall, SIEM ingestion, DNS), and "spoke" VPCs/VNets for individual workloads connect to the hub via peering or Transit Gateway. All egress traffic routes through the hub for inspection.</p>
+
+<h3>Defense in Depth — Cloud Layers</h3>
+<ul>
+<li><strong>Edge</strong> — CDN WAF (CloudFront + WAF, Azure Front Door), DDoS protection</li>
+<li><strong>Network</strong> — Security Groups, NACLs, Network Firewall, NSGs, Azure Firewall</li>
+<li><strong>Compute</strong> — EDR agents, hardened AMIs, patch management, IMDSv2</li>
+<li><strong>Application</strong> — API Gateway, secrets management (Secrets Manager, Key Vault), SAST/DAST</li>
+<li><strong>Data</strong> — Encryption at rest (KMS, CMK), encryption in transit (TLS 1.2+), DLP, bucket policies</li>
+<li><strong>Identity</strong> — IAM least privilege, SCPs, Conditional Access, PIM</li>
+</ul>
+
+<h2>AWS Security Architecture</h2>
+<h3>Core Services for Security Architects</h3>
+<ul>
+<li><strong>IAM</strong> — roles, policies, SCPs; prefer roles over access keys; enforce MFA for console</li>
+<li><strong>Organizations + Control Tower</strong> — multi-account governance, landing zone automation</li>
+<li><strong>GuardDuty</strong> — threat detection (network, DNS, CloudTrail anomalies, S3, EKS, Lambda)</li>
+<li><strong>Security Hub</strong> — aggregates findings from GuardDuty, Inspector, Macie, Config, third-party tools</li>
+<li><strong>CloudTrail</strong> — API audit log; enable organization trail; log to separate account</li>
+<li><strong>Config</strong> — resource configuration tracking; managed rules for compliance; remediation actions</li>
+<li><strong>Macie</strong> — PII/sensitive data discovery in S3</li>
+<li><strong>Inspector</strong> — vulnerability scanning for EC2, ECR, Lambda</li>
+<li><strong>KMS</strong> — key management; prefer CMK (customer-managed keys) for sensitive workloads</li>
+<li><strong>VPC Flow Logs</strong> — network traffic analysis; critical for incident investigation</li>
+</ul>
+
+<h3>AWS Security Reference Architecture Key Patterns</h3>
+<ul>
+<li>Separate Security Tooling account from production accounts</li>
+<li>Log Archive account with immutable S3 storage (Object Lock)</li>
+<li>Management account used only for Organizations/billing — no workloads</li>
+<li>SCPs to prevent disabling GuardDuty, CloudTrail, or Security Hub org-wide</li>
+</ul>
+
+<h2>Azure Security Architecture</h2>
+<h3>Core Services for Security Architects</h3>
+<ul>
+<li><strong>Entra ID (Azure AD)</strong> — identity foundation; Conditional Access; PIM for privileged roles</li>
+<li><strong>Defender for Cloud</strong> — CSPM + CWPP; Secure Score; regulatory compliance dashboard</li>
+<li><strong>Sentinel</strong> — cloud-native SIEM/SOAR; analytics rules; threat intelligence integration</li>
+<li><strong>Azure Policy + Management Groups</strong> — enforce guardrails across subscriptions at scale</li>
+<li><strong>Key Vault</strong> — secrets, keys, certificates; managed HSM for FIPS 140-2 Level 3 workloads</li>
+<li><strong>Monitor + Log Analytics</strong> — centralized logging; diagnostic settings for all resource types</li>
+<li><strong>Private Link + Service Endpoints</strong> — keep PaaS traffic off public internet</li>
+</ul>
+
+<h2>Cloud-Native Application Protection (CNAPP)</h2>
+<p>CNAPP unifies capabilities that were previously separate point tools into a single platform for cloud security posture across the full workload lifecycle:</p>
+
+<table>
+<tr><th>Component</th><th>What it does</th></tr>
+<tr><td><strong>CSPM</strong> (Cloud Security Posture Mgmt)</td><td>Continuous misconfiguration detection across cloud resources; compliance mapping</td></tr>
+<tr><td><strong>CWPP</strong> (Cloud Workload Protection)</td><td>Runtime protection for VMs, containers, serverless functions; vulnerability scanning</td></tr>
+<tr><td><strong>CIEM</strong> (Cloud Infrastructure Entitlement Mgmt)</td><td>Identifies excessive permissions, orphaned identities, cross-account risk</td></tr>
+<tr><td><strong>KSPM</strong> (Kubernetes Security Posture)</td><td>Misconfiguration detection for Kubernetes clusters, workloads, and RBAC</td></tr>
+<tr><td><strong>IaC Security</strong></td><td>Scans Terraform/CloudFormation/ARM templates for misconfigurations before deployment</td></tr>
+</table>
+
+<p>Leading CNAPP vendors: Wiz, Prisma Cloud (Palo Alto), Defender for Cloud (Microsoft), Lacework, Orca Security.</p>
+
+<h2>Identity in the Cloud — IAM Architecture Principles</h2>
+<ul>
+<li><strong>Least privilege</strong> — grant minimum permissions required; review regularly with CIEM tools</li>
+<li><strong>No long-lived credentials</strong> — use roles/managed identities; rotate if keys are required</li>
+<li><strong>Workload identity</strong> — service accounts, managed identities, workload identity federation (no secrets in code)</li>
+<li><strong>Break-glass accounts</strong> — highly restricted, monitored emergency access accounts for each account/subscription</li>
+<li><strong>SCPs as guardrails</strong> — use Organization-level policies to prevent critical security controls from being disabled</li>
+</ul>
+
+<h2>Key Metrics for Cloud Security Posture</h2>
+<ul>
+<li><strong>Mean Time to Remediate (MTTR) critical findings</strong> — target &lt;24 hours for critical, &lt;72 hours for high</li>
+<li><strong>Secure Score / Compliance %</strong> — benchmark across CIS, NIST, PCI baselines</li>
+<li><strong>Public exposure rate</strong> — % of storage buckets/databases with public access enabled</li>
+<li><strong>MFA coverage</strong> — % of human identities with phishing-resistant MFA</li>
+<li><strong>Encryption coverage</strong> — % of data stores encrypted with CMK</li>
+</ul>
+
+<blockquote>
+<p><strong>Role Prep:</strong> Be ready to design a cloud security architecture from scratch — a common interview exercise. Start with: shared responsibility clarification → account/subscription structure → identity model → network topology → logging strategy → threat detection → incident response. Working through this structure demonstrates architectural thinking, not just tool knowledge.</p>
+</blockquote>
+
+<h2>Recommended Learning Path</h2>
+<ol>
+<li>Read the <strong>AWS Security Reference Architecture</strong> — even if not AWS-focused, the patterns are universal</li>
+<li>Complete the <strong>CSA CCM v4</strong> domain overview — understand the control landscape</li>
+<li>Review <strong>CIS Benchmarks</strong> for your primary cloud provider</li>
+<li>Explore <strong>Defender for Cloud / Security Hub</strong> dashboards in a free/trial account to understand posture management UX</li>
+<li>Read <strong>CISA Cloud Security Technical Reference Architecture</strong> for federal cloud security context</li>
+</ol>
+</div>
+</body></html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html><body>
+<div id="guide-body">
+<h1>🏗️ SABSA & TOGAF — Enterprise Security Architecture</h1>
+<p><em>Business-driven security architecture frameworks for strategic alignment and design governance.</em></p>
+
+<h2>Why Enterprise Architecture Frameworks Matter</h2>
+<p>Security architects who only know controls and threats are tacticians. Those who understand enterprise architecture frameworks can translate security requirements into business outcomes, engage C-suite stakeholders, and design systems that align with organizational strategy. SABSA and TOGAF are the two most important EA frameworks for security architects to know.</p>
+
+<h2>SABSA — Sherwood Applied Business Security Architecture</h2>
+<p>SABSA is a risk-driven, business-outcome-focused framework for designing and delivering enterprise security architecture. Unlike NIST (which tells you <em>what</em> controls to implement), SABSA tells you <em>why</em> from a business perspective — and how to trace every security decision back to a business requirement.</p>
+
+<h3>The SABSA Matrix — Six Layers</h3>
+<p>SABSA adapts the Zachman Framework's six-row ontology. Each row answers a set of questions at a different level of abstraction:</p>
+
+<table>
+<tr><th>Layer</th><th>Perspective</th><th>What it answers</th><th>Security Focus</th></tr>
+<tr><td><strong>Contextual</strong></td><td>Business View</td><td>What? Why? Who? Where? When? How?</td><td>Business risk, drivers, and objectives</td></tr>
+<tr><td><strong>Conceptual</strong></td><td>Architect's View</td><td>Concepts and principles</td><td>Security policies, risk model, control philosophy</td></tr>
+<tr><td><strong>Logical</strong></td><td>Designer's View</td><td>Logical system design</td><td>Security services, trust model, information flows</td></tr>
+<tr><td><strong>Physical</strong></td><td>Builder's View</td><td>Physical design</td><td>Security mechanisms, protocols, tools</td></tr>
+<tr><td><strong>Component</strong></td><td>Tradesman's View</td><td>Products and standards</td><td>Specific products, configurations, code</td></tr>
+<tr><td><strong>Operational</strong></td><td>Facilities Manager</td><td>Day-to-day operations</td><td>People, processes, SOPs</td></tr>
+</table>
+
+<blockquote>
+<p><strong>Key Insight:</strong> Most security teams operate at Physical and Component layers (tools and configs) without doing the Contextual and Conceptual work first. SABSA's value is forcing architects upward — to start with business context before selecting technologies.</p>
+</blockquote>
+
+<h3>SABSA Attributes</h3>
+<p>Attributes are the core mechanism SABSA uses to link business requirements to security services. An attribute is any measurable property of a security service that the business cares about. Examples:</p>
+<ul>
+<li><strong>Availability</strong> — system must be up 99.9% of the time</li>
+<li><strong>Confidentiality</strong> — only authorized personnel can read customer data</li>
+<li><strong>Integrity</strong> — financial transactions must not be altered in transit</li>
+<li><strong>Auditability</strong> — all privileged actions must be logged and retained for 7 years</li>
+</ul>
+<p>These attributes become the requirements against which architectural solutions are measured — not features or controls, but business outcomes.</p>
+
+<h3>SABSA Trust Framework</h3>
+<p>SABSA defines trust architecturally: trust is not binary, it is contextual and conditional. The framework introduces <strong>trust domains</strong> (zones with shared trust levels) and <strong>trust relationships</strong> (how entities interact across domain boundaries). This maps directly to modern Zero Trust concepts — SABSA predates ZT but anticipated its logic.</p>
+
+<h2>TOGAF 10 — The Open Group Architecture Framework</h2>
+<p>TOGAF is the world's most widely adopted enterprise architecture framework. It provides a structured method (ADM) for developing and managing enterprise architectures across business, data, application, and technology domains. Security architects must understand TOGAF to operate effectively within enterprise EA governance.</p>
+
+<h3>The Architecture Development Method (ADM)</h3>
+<p>The ADM is a cyclical process with distinct phases. Security concerns should be injected at every phase:</p>
+
+<table>
+<tr><th>Phase</th><th>Focus</th><th>Security Architect's Role</th></tr>
+<tr><td><strong>Preliminary</strong></td><td>Set up framework and principles</td><td>Define security architecture principles and governance model</td></tr>
+<tr><td><strong>A — Vision</strong></td><td>High-level stakeholder vision</td><td>Capture security requirements from business drivers, identify risk appetite</td></tr>
+<tr><td><strong>B — Business Architecture</strong></td><td>Business processes and organization</td><td>Map security services to business processes; identify sensitive workflows</td></tr>
+<tr><td><strong>C — Information Systems Architecture</strong></td><td>Data and application architecture</td><td>Define data classification, information security controls, application security requirements</td></tr>
+<tr><td><strong>D — Technology Architecture</strong></td><td>Infrastructure and technology</td><td>Design network security zones, encryption standards, platform security patterns</td></tr>
+<tr><td><strong>E — Opportunities & Solutions</strong></td><td>Implementation planning</td><td>Evaluate security products/tools against architecture requirements</td></tr>
+<tr><td><strong>F — Migration Planning</strong></td><td>Transition roadmap</td><td>Sequence security improvements; manage risk during transition states</td></tr>
+<tr><td><strong>G — Implementation Governance</strong></td><td>Oversee implementation</td><td>Review implementation conformance; security architecture compliance</td></tr>
+<tr><td><strong>H — Architecture Change Management</strong></td><td>Manage architecture evolution</td><td>Assess security impact of proposed changes; update threat model</td></tr>
+</table>
+
+<h3>TOGAF Architecture Repository</h3>
+<p>TOGAF defines a repository of reusable architecture assets. For security architects, the most important components are:</p>
+<ul>
+<li><strong>Architecture Principles</strong> — e.g., "Least privilege by default," "Encrypt data in transit and at rest"</li>
+<li><strong>Architecture Building Blocks (ABBs)</strong> — reusable security capabilities (IAM, SIEM, PKI)</li>
+<li><strong>Solution Building Blocks (SBBs)</strong> — specific products/implementations of ABBs</li>
+<li><strong>Reference Models</strong> — approved security patterns (e.g., DMZ design, cloud landing zone)</li>
+</ul>
+
+<h2>Integrating SABSA and TOGAF</h2>
+<p>The Open Group has published formal guidance on combining these frameworks. The integration works like this:</p>
+<ul>
+<li>TOGAF ADM phases map to SABSA layers — both use a top-down, contextual-to-physical progression</li>
+<li>SABSA's Contextual layer aligns with TOGAF Phase A (Vision) and B (Business)</li>
+<li>SABSA's Logical layer aligns with TOGAF Phases C and D (Information Systems and Technology)</li>
+<li>SABSA attributes can serve as the security-specific requirements that feed into TOGAF's Architecture Requirements Specification</li>
+</ul>
+
+<blockquote>
+<p><strong>Practical Takeaway:</strong> In most enterprise environments, TOGAF provides the governance structure and ADM process, while SABSA provides the security-specific methodology within it. You need TOGAF fluency to participate in EA governance; you need SABSA fluency to bring security depth to that participation.</p>
+</blockquote>
+
+<h2>Zachman Framework — The Foundation</h2>
+<p>Both SABSA and TOGAF draw from the Zachman Framework. Zachman defines enterprise architecture as a 6×6 matrix: six stakeholder perspectives (Planner, Owner, Designer, Builder, Integrator, User) × six interrogatives (What, How, Where, Who, When, Why). Understanding this ontology clarifies why both SABSA and TOGAF organize information the way they do.</p>
+
+<h2>Practical Skills for Your New Role</h2>
+<h3>Architecture Views and Viewpoints</h3>
+<p>Security architects regularly produce architecture views for different audiences. Know how to create and present:</p>
+<ul>
+<li><strong>Logical Security Architecture</strong> — trust zones, data flows, control placement</li>
+<li><strong>Physical Security Architecture</strong> — network diagrams, tool deployments, configurations</li>
+<li><strong>Risk Architecture</strong> — risk register, heat maps, treatment decisions</li>
+<li><strong>Security Reference Architecture</strong> — approved patterns for reuse across projects</li>
+</ul>
+
+<h3>Stakeholder Communication</h3>
+<p>SABSA and TOGAF both emphasize that architecture must be communicated differently for different audiences. The Contextual layer (SABSA) / Phase A (TOGAF) is for executives. The Physical layer is for engineers. As an architect, you bridge both worlds — your biggest value is translating between them.</p>
+
+<h2>Recommended Learning Path</h2>
+<ol>
+<li>Read the <strong>SABSA Executive Summary</strong> (free on sabsa.org) — 30 minutes to understand the whole model</li>
+<li>Read the <strong>Open Group TOGAF ADM overview</strong> — understand phase progression</li>
+<li>Read <strong>The Open Group guide on integrating SABSA + TOGAF</strong> (document G13B)</li>
+<li>Practice by mapping a real system you know to the SABSA matrix — identify which layers are well-defined and which are gaps</li>
+</ol>
+</div>
+</body></html>

@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Security Architecture Hub</title>
+<link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+
+<!-- ═══════════════════════════════ SIDEBAR ═══════════════════════════════ -->
+<div id="sidebar">
+  <div id="sidebar-header">
+    <h1>🔐 SecArch Hub</h1>
+    <p>Security Architecture Library</p>
+  </div>
+  <nav>
+    <div class="nav-section">Main</div>
+    <div class="nav-item active" onclick="showPage('dashboard', this)">
+      <span class="icon">📊</span> Dashboard
+    </div>
+    <div class="nav-item" onclick="showPage('library', this)">
+      <span class="icon">📚</span> Library
+    </div>
+    <div class="nav-item" onclick="showPage('progress', this)">
+      <span class="icon">✅</span> Study Progress
+    </div>
+    <div class="nav-item" onclick="showPage('notes', this)">
+      <span class="icon">📝</span> My Notes
+    </div>
+
+    <div class="nav-section">Frameworks</div>
+    <div class="nav-item" onclick="showPage('togaf', this)">
+      <span class="icon">🏗️</span> TOGAF Explorer
+    </div>
+    <div class="nav-item" onclick="openGuide('nist')">
+      <span class="icon">🏛️</span> NIST CSF / RMF
+    </div>
+    <div class="nav-item" onclick="openGuide('sabsa')">
+      <span class="icon">📐</span> SABSA / TOGAF Guide
+    </div>
+    <div class="nav-item" onclick="openGuide('zerotrust')">
+      <span class="icon">🔒</span> Zero Trust / SASE
+    </div>
+    <div class="nav-item" onclick="openGuide('cloud')">
+      <span class="icon">☁️</span> Cloud Security
+    </div>
+  </nav>
+  <div id="sidebar-footer">
+    <p>Last updated <span id="last-updated">—</span></p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ MAIN ═══════════════════════════════ -->
+<div id="main">
+
+  <!-- ── DASHBOARD ── -->
+  <div class="page active" id="page-dashboard">
+    <div class="page-header">
+      <h2>Security Architecture Dashboard</h2>
+      <p>Your learning hub — news, trends, and quick reference</p>
+    </div>
+
+    <div class="grid-4" style="margin-bottom:20px;">
+      <div class="stat-card">
+        <div class="stat-label">Frameworks</div>
+        <div class="stat-value" style="color:var(--accent)">4</div>
+        <div class="stat-sub">Core domains covered</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Resources</div>
+        <div class="stat-value" style="color:var(--green)" id="resource-count">28</div>
+        <div class="stat-sub">Curated references</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Study Progress</div>
+        <div class="stat-value" style="color:var(--purple)" id="progress-pct">0%</div>
+        <div class="stat-sub">Topics completed</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Notes Saved</div>
+        <div class="stat-value" style="color:var(--amber)" id="notes-count">0</div>
+        <div class="stat-sub">Annotations made</div>
+      </div>
+    </div>
+
+    <div class="grid-2" style="margin-bottom:20px;">
+      <!-- News feed -->
+      <div class="card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+          <div class="section-title" style="margin:0">Latest Security News</div>
+          <button class="btn btn-outline" onclick="loadNews()" style="font-size:11px;padding:4px 10px;">↻ Refresh</button>
+        </div>
+        <div id="news-feed">
+          <div class="news-loading">Loading news feeds…</div>
+        </div>
+      </div>
+
+      <!-- Trends -->
+      <div>
+        <div class="card" style="margin-bottom:16px;">
+          <div class="section-title">2025–2026 Architecture Trends</div>
+          <div id="trends-list">
+            <div class="trend-item"><div class="trend-num">01</div><div class="trend-text"><h4>AI-Powered Threat Detection</h4><p>ML models integrated into SOC workflows for real-time anomaly detection and response automation.</p></div></div>
+            <div class="trend-item"><div class="trend-num">02</div><div class="trend-text"><h4>Zero Trust Maturity Models</h4><p>Organizations advancing from identity-centric ZT to full network/data segmentation maturity.</p></div></div>
+            <div class="trend-item"><div class="trend-num">03</div><div class="trend-text"><h4>Secure by Design (CISA)</h4><p>Regulatory push for vendors to embed security into product lifecycle from inception.</p></div></div>
+            <div class="trend-item"><div class="trend-num">04</div><div class="trend-text"><h4>Quantum-Resistant Cryptography</h4><p>NIST PQC standards finalized — migration planning now critical for long-lived systems.</p></div></div>
+            <div class="trend-item"><div class="trend-num">05</div><div class="trend-text"><h4>Cloud-Native Security Posture</h4><p>CNAPP platforms unifying CSPM, CWPP, and CIEM for unified cloud risk visibility.</p></div></div>
+          </div>
+        </div>
+
+        <div class="card card-sm">
+          <div class="section-title">Quick Reference</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;">
+            <span class="tag tag-blue" style="cursor:pointer" onclick="openGuide('nist')">NIST CSF 2.0</span>
+            <span class="tag tag-green" style="cursor:pointer" onclick="openGuide('nist')">NIST RMF</span>
+            <span class="tag tag-purple" style="cursor:pointer" onclick="openGuide('sabsa')">SABSA</span>
+            <span class="tag tag-amber" style="cursor:pointer" onclick="openGuide('sabsa')">TOGAF 10</span>
+            <span class="tag tag-slate" style="cursor:pointer" onclick="openGuide('zerotrust')">Zero Trust</span>
+            <span class="tag tag-red" style="cursor:pointer" onclick="openGuide('zerotrust')">SASE</span>
+            <span class="tag tag-blue" style="cursor:pointer" onclick="openGuide('cloud')">CSA CCM</span>
+            <span class="tag tag-green" style="cursor:pointer" onclick="openGuide('cloud')">AWS Well-Arch</span>
+            <span class="tag tag-purple" style="cursor:pointer" onclick="openGuide('cloud')">CIS Benchmarks</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── LIBRARY ── -->
+  <div class="page" id="page-library">
+    <div class="page-header">
+      <h2>Resource Library</h2>
+      <p>Curated reading list organized by framework and domain</p>
+    </div>
+
+    <div class="search-bar">
+      <span>🔍</span>
+      <input type="text" placeholder="Search resources…" oninput="filterResources(this.value)" id="search-input">
+    </div>
+
+    <div id="library-content"></div>
+  </div>
+
+  <!-- ── GUIDE READER ── -->
+  <div class="page" id="page-guide">
+    <button class="back-btn" onclick="showPage('library', document.querySelector('[onclick*=library]'))">← Back to Library</button>
+    <div id="guide-content"></div>
+  </div>
+
+  <!-- ── PROGRESS ── -->
+  <div class="page" id="page-progress">
+    <div class="page-header">
+      <h2>Study Progress</h2>
+      <p>Track your learning milestones across frameworks</p>
+    </div>
+    <div style="margin-bottom:20px;" class="card">
+      <div class="section-title">Overall Progress</div>
+      <div class="progress-bar-wrap"><div class="progress-bar" id="overall-bar" style="width:0%"></div></div>
+      <div style="font-size:12px;color:var(--text-muted);margin-top:8px;" id="overall-label">0 of 20 topics completed</div>
+    </div>
+    <div id="progress-list" style="display:flex;flex-direction:column;gap:10px;"></div>
+  </div>
+
+  <!-- ── TOGAF EXPLORER ── -->
+  <div class="page" id="page-togaf">
+    <div class="page-header">
+      <h2>TOGAF ADM Explorer</h2>
+      <p>Interactive Architecture Development Method — click any phase to explore security linkages</p>
+    </div>
+
+    <!-- View toggle -->
+    <div style="display:flex;gap:8px;margin-bottom:20px;">
+      <button class="btn btn-primary" id="btn-adm" onclick="setTogafView('adm')">⬡ ADM Wheel</button>
+      <button class="btn btn-outline" id="btn-graph" onclick="setTogafView('graph')">⬡ Control Linkage Graph</button>
+      <button class="btn btn-outline" id="btn-matrix" onclick="setTogafView('matrix')">⬡ Framework Matrix</button>
+    </div>
+
+    <!-- ADM WHEEL VIEW -->
+    <div id="togaf-adm" style="display:flex;gap:20px;align-items:flex-start;">
+      <div class="card" style="flex:0 0 480px;padding:16px;display:flex;justify-content:center;">
+        <svg id="adm-svg" width="448" height="448" viewBox="0 0 448 448"></svg>
+      </div>
+      <div class="card" id="phase-detail" style="flex:1;min-height:448px;">
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--text-muted);text-align:center;padding:20px;">
+          <div style="font-size:48px;margin-bottom:12px;">🏗️</div>
+          <p style="font-size:14px;">Click any phase on the ADM wheel<br>to explore security architecture linkages</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTROL LINKAGE GRAPH VIEW -->
+    <div id="togaf-graph" style="display:none;">
+      <div class="card" style="padding:16px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+          <div>
+            <div class="section-title" style="margin:0">Security Capability Linkage Graph</div>
+            <p style="font-size:12px;color:var(--text-muted);margin-top:3px;">Hover nodes to highlight connections · Click to pin details</p>
+          </div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;">
+            <span style="font-size:11px;display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:50%;background:#3b82f6;display:inline-block"></span>Identity</span>
+            <span style="font-size:11px;display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:50%;background:#10b981;display:inline-block"></span>Detection</span>
+            <span style="font-size:11px;display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:50%;background:#f59e0b;display:inline-block"></span>Network</span>
+            <span style="font-size:11px;display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:50%;background:#8b5cf6;display:inline-block"></span>Data</span>
+            <span style="font-size:11px;display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:50%;background:#ef4444;display:inline-block"></span>Governance</span>
+          </div>
+        </div>
+        <canvas id="linkage-canvas" width="900" height="520" style="width:100%;border-radius:8px;background:#f8f9fb;cursor:pointer;"></canvas>
+        <div id="node-detail" style="margin-top:12px;padding:12px;background:var(--accent-light);border-radius:8px;display:none;border:1px solid #bfdbfe;">
+          <h4 id="node-name" style="font-size:14px;font-weight:700;color:#1d4ed8;"></h4>
+          <p id="node-desc" style="font-size:13px;color:#1e40af;margin-top:4px;"></p>
+          <div id="node-tags" style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MATRIX VIEW -->
+    <div id="togaf-matrix" style="display:none;">
+      <div class="card">
+        <div class="section-title">Framework Integration Matrix — TOGAF ADM × SABSA × NIST CSF × Controls</div>
+        <div style="overflow-x:auto;">
+          <table id="matrix-table" style="width:100%;border-collapse:collapse;font-size:12px;min-width:800px;"></table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── NOTES ── -->
+  <div class="page" id="page-notes">
+    <div class="page-header">
+      <h2>My Notes</h2>
+      <p>All annotations saved across resources</p>
+    </div>
+    <div id="notes-list">
+      <div style="color:var(--text-muted);font-size:14px;padding:20px 0;">No notes yet. Add notes from the Library resources.</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══ EMBEDDED GUIDE CONTENT (no fetch needed) ═══ -->
+<div style="display:none">
+
+<div id="guide-data-nist">
+<h1>🏛️ NIST CSF 2.0 &amp; Risk Management Framework</h1>
+<p><em>A focused reference guide for security architects entering enterprise and federal security roles.</em></p>
+<h2>Why NIST Matters for Security Architects</h2>
+<p>NIST frameworks are the lingua franca of enterprise and federal security. Whether you're designing controls, justifying risk decisions to leadership, or responding to an audit, NIST gives you a common vocabulary and defensible methodology. CSF is the "what" (functions and outcomes), while RMF is the "how" (process to authorize systems).</p>
+<h2>NIST CSF 2.0 — The Six Functions</h2>
+<p>Released in 2024, CSF 2.0 added a sixth function — <strong>Govern</strong> — reflecting that cybersecurity is fundamentally a business risk issue requiring executive ownership.</p>
+<table><tr><th>Function</th><th>Purpose</th><th>Key Categories</th></tr>
+<tr><td><strong>Govern (GV)</strong></td><td>Establish and monitor the organization's cybersecurity risk strategy, expectations, and policy</td><td>Organizational Context, Risk Management Strategy, Roles &amp; Responsibilities, Policy, Oversight, Supply Chain</td></tr>
+<tr><td><strong>Identify (ID)</strong></td><td>Understand cybersecurity risk to systems, people, assets, data, and capabilities</td><td>Asset Management, Risk Assessment, Improvement</td></tr>
+<tr><td><strong>Protect (PR)</strong></td><td>Implement safeguards to limit impact of a cybersecurity event</td><td>Identity Mgmt, Access Control, Awareness, Data Security, Platform Security, Technology Resilience</td></tr>
+<tr><td><strong>Detect (DE)</strong></td><td>Find and analyze potential cybersecurity events</td><td>Continuous Monitoring, Adverse Event Analysis</td></tr>
+<tr><td><strong>Respond (RS)</strong></td><td>Take action on a detected incident</td><td>Incident Management, Analysis, Mitigation, Reporting</td></tr>
+<tr><td><strong>Recover (RC)</strong></td><td>Restore capabilities after an incident</td><td>Incident Recovery Plan, Communication</td></tr></table>
+<blockquote><p><strong>Architect's Tip:</strong> When designing security programs, map every proposed control or capability to one of these functions. It forces clarity on whether you're investing in prevention (Protect) vs. detection (Detect) vs. response (Respond) — a common gap in immature programs.</p></blockquote>
+<h2>CSF Tiers — Measuring Maturity</h2>
+<p>CSF Tiers describe the degree to which cybersecurity risk management is informed, repeatable, and integrated with business risk decisions. They are <em>not</em> a maturity model in the traditional sense — the goal isn't always Tier 4.</p>
+<ul>
+<li><strong>Tier 1 — Partial:</strong> Risk practices are ad hoc, reactive, and not formalized.</li>
+<li><strong>Tier 2 — Risk Informed:</strong> Risk management practices are approved but may not be organization-wide policy.</li>
+<li><strong>Tier 3 — Repeatable:</strong> Practices are formally approved policy. Updated based on changes in business/threat landscape.</li>
+<li><strong>Tier 4 — Adaptive:</strong> Real-time updates based on continuous improvement from lessons learned and predictive indicators.</li>
+</ul>
+<h2>NIST Risk Management Framework (RMF)</h2>
+<p>RMF is a seven-step lifecycle process for authorizing information systems. Originally federal (FISMA), it's now widely adopted in enterprise and defense contexts.</p>
+<table><tr><th>Step</th><th>Action</th><th>Key Document</th></tr>
+<tr><td><strong>Prepare</strong></td><td>Establish context, roles, and risk strategy before the system is in scope</td><td>SP 800-37 Rev 2</td></tr>
+<tr><td><strong>Categorize</strong></td><td>Classify the system based on impact (Low/Moderate/High) for CIA</td><td>FIPS 199, SP 800-60</td></tr>
+<tr><td><strong>Select</strong></td><td>Choose baseline security controls from SP 800-53 based on categorization</td><td>SP 800-53B</td></tr>
+<tr><td><strong>Implement</strong></td><td>Deploy controls and document how they are implemented</td><td>SP 800-53A</td></tr>
+<tr><td><strong>Assess</strong></td><td>Evaluate whether controls are implemented correctly and producing desired outcomes</td><td>SP 800-53A</td></tr>
+<tr><td><strong>Authorize</strong></td><td>Senior official accepts residual risk and issues Authority to Operate (ATO)</td><td>SP 800-37</td></tr>
+<tr><td><strong>Monitor</strong></td><td>Continuously assess security posture, update controls, and report status</td><td>SP 800-137</td></tr></table>
+<h2>SP 800-53 Rev 5 — Control Families</h2>
+<p>The control catalog organizes 1,000+ controls into 20 families. As a security architect, you'll primarily design around these families rather than implementing individual controls directly.</p>
+<ul>
+<li><strong>AC</strong> — Access Control &nbsp;|&nbsp; <strong>AT</strong> — Awareness and Training &nbsp;|&nbsp; <strong>AU</strong> — Audit and Accountability</li>
+<li><strong>CA</strong> — Assessment, Authorization, and Monitoring &nbsp;|&nbsp; <strong>CM</strong> — Configuration Management</li>
+<li><strong>CP</strong> — Contingency Planning &nbsp;|&nbsp; <strong>IA</strong> — Identification and Authentication &nbsp;|&nbsp; <strong>IR</strong> — Incident Response</li>
+<li><strong>MA</strong> — Maintenance &nbsp;|&nbsp; <strong>MP</strong> — Media Protection &nbsp;|&nbsp; <strong>PE</strong> — Physical and Environmental Protection</li>
+<li><strong>PL</strong> — Planning &nbsp;|&nbsp; <strong>PM</strong> — Program Management &nbsp;|&nbsp; <strong>PS</strong> — Personnel Security</li>
+<li><strong>PT</strong> — PII Processing and Transparency &nbsp;|&nbsp; <strong>RA</strong> — Risk Assessment</li>
+<li><strong>SA</strong> — System and Services Acquisition &nbsp;|&nbsp; <strong>SC</strong> — System and Communications Protection</li>
+<li><strong>SI</strong> — System and Information Integrity &nbsp;|&nbsp; <strong>SR</strong> — Supply Chain Risk Management</li>
+</ul>
+<h2>Key Relationships Between Publications</h2>
+<ul>
+<li><strong>FIPS 199</strong> defines impact levels → drives <strong>SP 800-53B</strong> control baselines</li>
+<li><strong>SP 800-37</strong> (RMF process) → references <strong>SP 800-53</strong> (controls catalog)</li>
+<li><strong>SP 800-53A</strong> → provides assessment procedures for each SP 800-53 control</li>
+<li><strong>SP 800-137</strong> → continuous monitoring strategy once ATO is granted</li>
+<li><strong>CSF 2.0</strong> → maps to SP 800-53 controls in the online reference tool</li>
+</ul>
+<h2>Practical Architecture Considerations</h2>
+<h3>Control Inheritance</h3>
+<p>In multi-system environments, controls can be inherited (provided by a common service), system-specific, or hybrid. Architects must clearly document inheritance chains — especially when cloud providers (AWS, Azure) provide inherited controls via their FedRAMP authorizations.</p>
+<h3>Privacy Overlay</h3>
+<p>SP 800-53 Rev 5 integrates privacy controls directly (the PT family). Architects should assess PII flows early and apply appropriate controls — not treat privacy as an afterthought.</p>
+<h3>Supply Chain Risk (SCRM)</h3>
+<p>The SR family (added in Rev 5) addresses software supply chain integrity. Post-SolarWinds, this is now a critical architecture concern — especially SBOM requirements and vendor assessment processes.</p>
+<blockquote><p><strong>Interview/Role Prep:</strong> Be ready to explain the difference between CSF and RMF, when you'd use each, and how a control from SP 800-53 gets selected, implemented, and assessed. This is a common line of questioning in security architecture roles.</p></blockquote>
+<h2>Essential Reading Order</h2>
+<ol>
+<li>Read the <strong>CSF 2.0 Quick Start Guide</strong> (20 pages) — get the full picture fast</li>
+<li>Skim <strong>SP 800-37 Rev 2</strong> Chapter 2 — understand the RMF conceptually</li>
+<li>Browse <strong>SP 800-53 Rev 5</strong> Family introductions — don't read every control, just understand the structure</li>
+<li>Use the <strong>NIST CSF Online Reference Tool</strong> to explore control mappings</li>
+</ol>
+</div>
+
+<div id="guide-data-sabsa">
+<h1>🏗️ SABSA &amp; TOGAF — Enterprise Security Architecture</h1>
+<p><em>Business-driven security architecture frameworks for strategic alignment and design governance.</em></p>
+<h2>Why Enterprise Architecture Frameworks Matter</h2>
+<p>Security architects who only know controls and threats are tacticians. Those who understand enterprise architecture frameworks can translate security requirements into business outcomes, engage C-suite stakeholders, and design systems that align with organizational strategy. SABSA and TOGAF are the two most important EA frameworks for security architects to know.</p>
+<h2>SABSA — Sherwood Applied Business Security Architecture</h2>
+<p>SABSA is a risk-driven, business-outcome-focused framework for designing and delivering enterprise security architecture. Unlike NIST (which tells you <em>what</em> controls to implement), SABSA tells you <em>why</em> from a business perspective — and how to trace every security decision back to a business requirement.</p>
+<h3>The SABSA Matrix — Six Layers</h3>
+<table><tr><th>Layer</th><th>Perspective</th><th>What it answers</th><th>Security Focus</th></tr>
+<tr><td><strong>Contextual</strong></td><td>Business View</td><td>What? Why? Who? Where? When? How?</td><td>Business risk, drivers, and objectives</td></tr>
+<tr><td><strong>Conceptual</strong></td><td>Architect's View</td><td>Concepts and principles</td><td>Security policies, risk model, control philosophy</td></tr>
+<tr><td><strong>Logical</strong></td><td>Designer's View</td><td>Logical system design</td><td>Security services, trust model, information flows</td></tr>
+<tr><td><strong>Physical</strong></td><td>Builder's View</td><td>Physical design</td><td>Security mechanisms, protocols, tools</td></tr>
+<tr><td><strong>Component</strong></td><td>Tradesman's View</td><td>Products and standards</td><td>Specific products, configurations, code</td></tr>
+<tr><td><strong>Operational</strong></td><td>Facilities Manager</td><td>Day-to-day operations</td><td>People, processes, SOPs</td></tr></table>
+<blockquote><p><strong>Key Insight:</strong> Most security teams operate at Physical and Component layers (tools and configs) without doing the Contextual and Conceptual work first. SABSA's value is forcing architects upward — to start with business context before selecting technologies.</p></blockquote>
+<h3>SABSA Attributes</h3>
+<p>Attributes are the core mechanism SABSA uses to link business requirements to security services. An attribute is any measurable property of a security service the business cares about:</p>
+<ul>
+<li><strong>Availability</strong> — system must be up 99.9% of the time</li>
+<li><strong>Confidentiality</strong> — only authorized personnel can read customer data</li>
+<li><strong>Integrity</strong> — financial transactions must not be altered in transit</li>
+<li><strong>Auditability</strong> — all privileged actions must be logged and retained for 7 years</li>
+</ul>
+<h3>SABSA Trust Framework</h3>
+<p>SABSA defines trust architecturally: trust is not binary, it is contextual and conditional. The framework introduces <strong>trust domains</strong> (zones with shared trust levels) and <strong>trust relationships</strong> (how entities interact across domain boundaries). This maps directly to modern Zero Trust concepts — SABSA predates ZT but anticipated its logic.</p>
+<h2>TOGAF 10 — The Open Group Architecture Framework</h2>
+<p>TOGAF is the world's most widely adopted enterprise architecture framework. It provides a structured method (ADM) for developing and managing enterprise architectures across business, data, application, and technology domains.</p>
+<h3>The Architecture Development Method (ADM)</h3>
+<table><tr><th>Phase</th><th>Focus</th><th>Security Architect's Role</th></tr>
+<tr><td><strong>Preliminary</strong></td><td>Set up framework and principles</td><td>Define security architecture principles and governance model</td></tr>
+<tr><td><strong>A — Vision</strong></td><td>High-level stakeholder vision</td><td>Capture security requirements from business drivers, identify risk appetite</td></tr>
+<tr><td><strong>B — Business Architecture</strong></td><td>Business processes and organization</td><td>Map security services to business processes; identify sensitive workflows</td></tr>
+<tr><td><strong>C — Information Systems Architecture</strong></td><td>Data and application architecture</td><td>Define data classification, information security controls, application security requirements</td></tr>
+<tr><td><strong>D — Technology Architecture</strong></td><td>Infrastructure and technology</td><td>Design network security zones, encryption standards, platform security patterns</td></tr>
+<tr><td><strong>E — Opportunities &amp; Solutions</strong></td><td>Implementation planning</td><td>Evaluate security products/tools against architecture requirements</td></tr>
+<tr><td><strong>F — Migration Planning</strong></td><td>Transition roadmap</td><td>Sequence security improvements; manage risk during transition states</td></tr>
+<tr><td><strong>G — Implementation Governance</strong></td><td>Oversee implementation</td><td>Review implementation conformance; security architecture compliance</td></tr>
+<tr><td><strong>H — Architecture Change Management</strong></td><td>Architecture evolution</td><td>Assess security impact of proposed changes; update threat model</td></tr></table>
+<h3>TOGAF Architecture Repository</h3>
+<ul>
+<li><strong>Architecture Principles</strong> — e.g., "Least privilege by default," "Encrypt data in transit and at rest"</li>
+<li><strong>Architecture Building Blocks (ABBs)</strong> — reusable security capabilities (IAM, SIEM, PKI)</li>
+<li><strong>Solution Building Blocks (SBBs)</strong> — specific products/implementations of ABBs</li>
+<li><strong>Reference Models</strong> — approved security patterns (e.g., DMZ design, cloud landing zone)</li>
+</ul>
+<h2>Integrating SABSA and TOGAF</h2>
+<ul>
+<li>TOGAF ADM phases map to SABSA layers — both use a top-down, contextual-to-physical progression</li>
+<li>SABSA's Contextual layer aligns with TOGAF Phase A (Vision) and B (Business)</li>
+<li>SABSA's Logical layer aligns with TOGAF Phases C and D (Information Systems and Technology)</li>
+<li>SABSA attributes serve as the security-specific requirements feeding into TOGAF's Architecture Requirements Specification</li>
+</ul>
+<blockquote><p><strong>Practical Takeaway:</strong> TOGAF provides the governance structure and ADM process; SABSA provides the security-specific methodology within it. You need TOGAF fluency to participate in EA governance; you need SABSA fluency to bring security depth to that participation.</p></blockquote>
+<h2>Recommended Learning Path</h2>
+<ol>
+<li>Read the <strong>SABSA Executive Summary</strong> (free on sabsa.org) — 30 minutes to understand the whole model</li>
+<li>Read the <strong>Open Group TOGAF ADM overview</strong> — understand phase progression</li>
+<li>Read <strong>The Open Group guide on integrating SABSA + TOGAF</strong> (document G13B)</li>
+<li>Practice by mapping a real system to the SABSA matrix — identify which layers are well-defined and which are gaps</li>
+</ol>
+</div>
+
+<div id="guide-data-zerotrust">
+<h1>🔒 Zero Trust &amp; SASE Architecture</h1>
+<p><em>Modern perimeter-less security design for cloud-first, hybrid, and remote-work environments.</em></p>
+<h2>The End of the Perimeter</h2>
+<p>Traditional security architectures assumed a hard perimeter: everything inside the network was trusted, everything outside was untrusted. Cloud adoption, remote work, and sophisticated lateral-movement attacks made this model obsolete. Zero Trust replaces perimeter trust with continuous verification — "never trust, always verify."</p>
+<h2>Zero Trust — Core Tenets (NIST SP 800-207)</h2>
+<ol>
+<li><strong>All data sources and computing services are resources.</strong> Devices, users, and services must all authenticate regardless of network location.</li>
+<li><strong>All communication is secured regardless of network location.</strong> No implicit trust based on being "inside" the corporate network.</li>
+<li><strong>Access to individual enterprise resources is granted on a per-session basis.</strong> Each request is evaluated independently.</li>
+<li><strong>Access to resources is determined by dynamic policy.</strong> Policy evaluates identity, device health, behavior, and context — not just credentials.</li>
+<li><strong>All enterprise-owned devices are monitored and validated.</strong> Device posture is continuously assessed.</li>
+<li><strong>All resource authentication and authorization is dynamic and strictly enforced.</strong> Reauthentication triggers on significant context changes.</li>
+<li><strong>The enterprise collects information about the current state of assets and communications.</strong> Data drives continuous improvement of posture.</li>
+</ol>
+<blockquote><p><strong>Common Misconception:</strong> Zero Trust is not a product you buy. It's an architectural philosophy implemented through multiple technologies: identity, device management, network segmentation, application access controls, and data protection — working together.</p></blockquote>
+<h2>CISA Zero Trust Maturity Model 2.0 — Five Pillars</h2>
+<table><tr><th>Pillar</th><th>Traditional (Starting State)</th><th>Optimal (Target State)</th></tr>
+<tr><td><strong>Identity</strong></td><td>Password-only auth, static roles, manual provisioning</td><td>Continuous validation, risk-based MFA, dynamic ABAC, just-in-time access</td></tr>
+<tr><td><strong>Devices</strong></td><td>Manual inventory, no posture assessment</td><td>Real-time device health integrated with access decisions</td></tr>
+<tr><td><strong>Networks</strong></td><td>Flat network, implicit trust based on location</td><td>Full micro-segmentation, encrypted all-to-all, automated policy enforcement</td></tr>
+<tr><td><strong>Applications</strong></td><td>VPN access to all apps, coarse-grained permissions</td><td>App-level access controls, threat detection per-app, continuous authorization</td></tr>
+<tr><td><strong>Data</strong></td><td>Coarse-grained data classification, minimal encryption</td><td>Automated classification, DLP on all flows, encryption everywhere, fine-grained access</td></tr></table>
+<h2>ZT Architecture Components (NIST SP 800-207)</h2>
+<ul>
+<li><strong>Policy Engine (PE)</strong> — makes the trust decision based on policy rules and signals</li>
+<li><strong>Policy Administrator (PA)</strong> — establishes and shuts down communication paths between subject and resource</li>
+<li><strong>Policy Enforcement Point (PEP)</strong> — the gatekeeper; enables, monitors, and terminates connections based on PDP decisions</li>
+</ul>
+<h2>Identity as the New Perimeter</h2>
+<ul>
+<li><strong>Strong MFA</strong> — phishing-resistant (FIDO2/passkeys) preferred over SMS/TOTP for privileged access</li>
+<li><strong>Conditional Access</strong> — grant access only when identity + device + context meet policy thresholds</li>
+<li><strong>Privileged Identity Management (PIM)</strong> — just-in-time elevation, no standing privilege</li>
+<li><strong>ABAC over RBAC</strong> — Attribute-Based Access Control enables fine-grained, context-aware decisions</li>
+<li><strong>Identity Governance</strong> — automated access reviews, orphaned account detection, separation of duties</li>
+</ul>
+<h2>SASE — Secure Access Service Edge</h2>
+<table><tr><th>Component</th><th>Function</th></tr>
+<tr><td><strong>SD-WAN</strong></td><td>Software-defined WAN for intelligent traffic routing across branches, cloud, and internet</td></tr>
+<tr><td><strong>SWG</strong></td><td>Secure Web Gateway: URL filtering, malware inspection, SSL inspection</td></tr>
+<tr><td><strong>CASB</strong></td><td>Cloud Access Security Broker: SaaS visibility, DLP, shadow IT discovery</td></tr>
+<tr><td><strong>ZTNA</strong></td><td>Zero Trust Network Access: replaces VPN with identity-aware, app-specific remote access</td></tr>
+<tr><td><strong>FWaaS</strong></td><td>Firewall as a Service: cloud-delivered NGFW for all traffic types</td></tr></table>
+<h2>ZTNA vs. Traditional VPN</h2>
+<table><tr><th>Dimension</th><th>VPN</th><th>ZTNA</th></tr>
+<tr><td>Trust model</td><td>Network-level trust once connected</td><td>Per-session, per-application verification</td></tr>
+<tr><td>Access scope</td><td>Full network segment access</td><td>Specific application only</td></tr>
+<tr><td>Device posture</td><td>Not assessed continuously</td><td>Real-time posture evaluation before and during access</td></tr>
+<tr><td>Lateral movement risk</td><td>High — broad network access</td><td>Low — no network exposure</td></tr></table>
+<h2>ZT Implementation Roadmap</h2>
+<ol>
+<li><strong>Phase 1 — Identity Foundation:</strong> Deploy phishing-resistant MFA, implement Conditional Access, inventory all identities</li>
+<li><strong>Phase 2 — Device Visibility:</strong> MDM enrollment, EDR deployment, device compliance policies</li>
+<li><strong>Phase 3 — Application Access:</strong> Replace VPN with ZTNA for critical apps, enforce app-level MFA</li>
+<li><strong>Phase 4 — Network Segmentation:</strong> Define macro-segments, begin workload isolation for critical systems</li>
+<li><strong>Phase 5 — Data Protection:</strong> Classify sensitive data, enforce DLP, encrypt data at rest and in transit</li>
+<li><strong>Phase 6 — Continuous Optimization:</strong> Behavioral analytics, automated response, ZT governance program</li>
+</ol>
+<blockquote><p><strong>Role Prep:</strong> Be prepared to discuss how you'd approach a ZT roadmap for a hybrid organization. Identity first is almost always the right answer — it provides the control plane for everything else.</p></blockquote>
+</div>
+
+<div id="guide-data-cloud">
+<h1>☁️ Cloud Security Architecture</h1>
+<p><em>Security design patterns, controls, and posture management across AWS, Azure, and GCP.</em></p>
+<h2>Cloud Changes the Architecture Problem</h2>
+<p>Cloud adoption shifts the security model in fundamental ways: the attack surface is elastic, the perimeter is API-defined, infrastructure is code, and the shared responsibility boundary creates accountability gaps if not understood clearly.</p>
+<h2>Shared Responsibility Model</h2>
+<table><tr><th>Responsibility</th><th>IaaS</th><th>PaaS</th><th>SaaS</th></tr>
+<tr><td>Physical infrastructure</td><td>CSP</td><td>CSP</td><td>CSP</td></tr>
+<tr><td>Hypervisor / host OS</td><td>CSP</td><td>CSP</td><td>CSP</td></tr>
+<tr><td>Network controls</td><td>Shared</td><td>CSP</td><td>CSP</td></tr>
+<tr><td>Guest OS / runtime</td><td>Customer</td><td>CSP</td><td>CSP</td></tr>
+<tr><td>Application code</td><td>Customer</td><td>Customer</td><td>CSP</td></tr>
+<tr><td>Identity &amp; access</td><td>Customer</td><td>Customer</td><td>Shared</td></tr>
+<tr><td>Data classification</td><td>Customer</td><td>Customer</td><td>Customer</td></tr>
+<tr><td>Data encryption</td><td>Customer</td><td>Shared</td><td>Shared</td></tr></table>
+<blockquote><p><strong>Architect's Trap:</strong> "The cloud provider handles security" is always partially wrong. You always own identity, data classification, and encryption key management.</p></blockquote>
+<h2>CSA Cloud Controls Matrix (CCM v4) — 17 Domains</h2>
+<p>197 controls with cross-references to ISO 27001, NIST CSF, PCI-DSS, HIPAA, and more. Key domains: A&amp;A (Audit), AIS (App Security), CEK (Cryptography), DSP (Data Security &amp; Privacy), GRC (Governance), IAM (Identity), IVS (Infrastructure), LOG (Logging), SEF (Incident Management), TVM (Threat &amp; Vuln Mgmt).</p>
+<h2>Cloud Security Architecture Patterns</h2>
+<h3>Multi-Account / Landing Zone</h3>
+<ul>
+<li><strong>Blast radius containment</strong> — compromised workload account cannot access security tooling accounts</li>
+<li><strong>Policy inheritance</strong> — SCPs or Azure Policy enforce guardrails across the estate</li>
+<li><strong>Centralized logging</strong> — all CloudTrail/Activity Logs aggregated to a dedicated log archive account</li>
+<li><strong>Security tooling isolation</strong> — GuardDuty, Security Hub, Defender for Cloud in separate accounts</li>
+</ul>
+<h3>Hub-and-Spoke Network</h3>
+<p>Central "hub" VPC/VNet holds shared security services (firewall, SIEM ingestion, DNS). Spoke VPCs connect via peering or Transit Gateway. All egress routes through the hub for inspection.</p>
+<h3>Defense in Depth — Cloud Layers</h3>
+<ul>
+<li><strong>Edge</strong> — CDN WAF, DDoS protection</li>
+<li><strong>Network</strong> — Security Groups, NACLs, Network Firewall, NSGs, Azure Firewall</li>
+<li><strong>Compute</strong> — EDR agents, hardened AMIs, patch management</li>
+<li><strong>Application</strong> — API Gateway, secrets management (Secrets Manager, Key Vault)</li>
+<li><strong>Data</strong> — Encryption at rest (KMS/CMK), TLS 1.3 in transit, DLP, bucket policies</li>
+<li><strong>Identity</strong> — IAM least privilege, SCPs, Conditional Access, PIM</li>
+</ul>
+<h2>AWS Core Security Services</h2>
+<ul>
+<li><strong>IAM</strong> — roles, policies, SCPs; prefer roles over access keys; enforce MFA for console</li>
+<li><strong>Organizations + Control Tower</strong> — multi-account governance, landing zone automation</li>
+<li><strong>GuardDuty</strong> — threat detection (network, DNS, CloudTrail anomalies, S3, EKS, Lambda)</li>
+<li><strong>Security Hub</strong> — aggregates findings from GuardDuty, Inspector, Macie, Config</li>
+<li><strong>CloudTrail</strong> — API audit log; enable organization trail; log to separate account</li>
+<li><strong>Macie</strong> — PII/sensitive data discovery in S3</li>
+<li><strong>KMS</strong> — key management; prefer CMK for sensitive workloads</li>
+</ul>
+<h2>Azure Core Security Services</h2>
+<ul>
+<li><strong>Entra ID</strong> — identity foundation; Conditional Access; PIM for privileged roles</li>
+<li><strong>Defender for Cloud</strong> — CSPM + CWPP; Secure Score; regulatory compliance dashboard</li>
+<li><strong>Sentinel</strong> — cloud-native SIEM/SOAR; analytics rules; threat intelligence integration</li>
+<li><strong>Azure Policy + Management Groups</strong> — enforce guardrails across subscriptions at scale</li>
+<li><strong>Key Vault</strong> — secrets, keys, certificates; managed HSM for FIPS 140-2 Level 3</li>
+</ul>
+<h2>CNAPP — Cloud-Native Application Protection</h2>
+<table><tr><th>Component</th><th>What it does</th></tr>
+<tr><td><strong>CSPM</strong></td><td>Continuous misconfiguration detection across cloud resources; compliance mapping</td></tr>
+<tr><td><strong>CWPP</strong></td><td>Runtime protection for VMs, containers, serverless; vulnerability scanning</td></tr>
+<tr><td><strong>CIEM</strong></td><td>Identifies excessive permissions, orphaned identities, cross-account risk</td></tr>
+<tr><td><strong>KSPM</strong></td><td>Misconfiguration detection for Kubernetes clusters, workloads, and RBAC</td></tr>
+<tr><td><strong>IaC Security</strong></td><td>Scans Terraform/CloudFormation/ARM templates before deployment</td></tr></table>
+<p>Leading vendors: Wiz, Prisma Cloud (Palo Alto), Defender for Cloud, Lacework, Orca Security.</p>
+<h2>IAM Architecture Principles</h2>
+<ul>
+<li><strong>Least privilege</strong> — grant minimum permissions; review regularly with CIEM tools</li>
+<li><strong>No long-lived credentials</strong> — use roles/managed identities; rotate if keys are required</li>
+<li><strong>Workload identity</strong> — managed identities, workload identity federation (no secrets in code)</li>
+<li><strong>Break-glass accounts</strong> — highly restricted, monitored emergency access for each account</li>
+<li><strong>SCPs as guardrails</strong> — prevent critical security controls from being disabled org-wide</li>
+</ul>
+<blockquote><p><strong>Role Prep:</strong> Be ready to design a cloud security architecture from scratch. Start with: shared responsibility → account structure → identity model → network topology → logging strategy → threat detection → incident response. This structure shows architectural thinking, not just tool knowledge.</p></blockquote>
+</div>
+
+</div>
+<!-- ═══ END GUIDE CONTENT ═══ -->
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/utils.js"></script>
+<script src="assets/js/nav.js"></script>
+<script src="assets/js/library.js"></script>
+<script src="assets/js/notes.js"></script>
+<script src="assets/js/progress.js"></script>
+<script src="assets/js/news.js"></script>
+<script src="assets/js/togaf.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

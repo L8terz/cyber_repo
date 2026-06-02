@@ -1,0 +1,19 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Editor directories
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Node (for Phase 2 local server)
+node_modules/
+npm-debug.log*
+
+# Misc
+*.log
+.env
