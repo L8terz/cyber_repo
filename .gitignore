@@ -10,8 +10,10 @@
 *.swp
 *.swo
 
-# Node (for Phase 2 local server)
+# Node / Astro
 node_modules/
+dist/
+.astro/
 npm-debug.log*
 
 # Misc

@@ -1,0 +1,265 @@
+---
+import { getCollection, render } from 'astro:content';
+import '../styles/global.css';
+
+const guides = await getCollection('guides');
+const renderedGuides = await Promise.all(
+  guides.map(async (guide) => {
+    const { Content } = await render(guide);
+    return { id: guide.data.guideId, Content };
+  })
+);
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Security Architecture Hub</title>
+</head>
+<body>
+
+<!-- ═══════════════════════════════ SIDEBAR ═══════════════════════════════ -->
+<div id="sidebar">
+  <div id="sidebar-header">
+    <h1>🔐 SecArch Hub</h1>
+    <p>Security Architecture Library</p>
+  </div>
+  <nav>
+    <div class="nav-section">Main</div>
+    <div class="nav-item active" onclick="showPage('dashboard', this)">
+      <span class="icon">📊</span> Dashboard
+    </div>
+    <div class="nav-item" onclick="showPage('library', this)">
+      <span class="icon">📚</span> Library
+    </div>
+    <div class="nav-item" onclick="showPage('progress', this)">
+      <span class="icon">✅</span> Study Progress
+    </div>
+    <div class="nav-item" onclick="showPage('notes', this)">
+      <span class="icon">📝</span> My Notes
+    </div>
+
+    <div class="nav-section">Frameworks</div>
+    <div class="nav-item" onclick="showPage('togaf', this)">
+      <span class="icon">🏗️</span> TOGAF Explorer
+    </div>
+    <div class="nav-item" onclick="openGuide('nist')">
+      <span class="icon">🏛️</span> NIST CSF / RMF
+    </div>
+    <div class="nav-item" onclick="openGuide('sabsa')">
+      <span class="icon">📐</span> SABSA / TOGAF Guide
+    </div>
+    <div class="nav-item" onclick="openGuide('zerotrust')">
+      <span class="icon">🔒</span> Zero Trust / SASE
+    </div>
+    <div class="nav-item" onclick="openGuide('cloud')">
+      <span class="icon">☁️</span> Cloud Security
+    </div>
+  </nav>
+  <div id="sidebar-footer">
+    <p>Last updated <span id="last-updated">—</span></p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ MAIN ═══════════════════════════════ -->
+<div id="main">
+
+  <!-- ── DASHBOARD ── -->
+  <div class="page active" id="page-dashboard">
+    <div class="page-header">
+      <h2>Security Architecture Dashboard</h2>
+      <p>Your learning hub — news, trends, and quick reference</p>
+    </div>
+
+    <div class="grid-4" style="margin-bottom:20px;">
+      <div class="stat-card">
+        <div class="stat-label">Frameworks</div>
+        <div class="stat-value" style="color:var(--accent)">4</div>
+        <div class="stat-sub">Core domains covered</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Resources</div>
+        <div class="stat-value" style="color:var(--green)" id="resource-count">28</div>
+        <div class="stat-sub">Curated references</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Study Progress</div>
+        <div class="stat-value" style="color:var(--purple)" id="progress-pct">0%</div>
+        <div class="stat-sub">Topics completed</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Notes Saved</div>
+        <div class="stat-value" style="color:var(--amber)" id="notes-count">0</div>
+        <div class="stat-sub">Annotations made</div>
+      </div>
+    </div>
+
+    <div class="grid-2" style="margin-bottom:20px;">
+      <div class="card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+          <div class="section-title" style="margin:0">Latest Security News</div>
+          <button class="btn btn-outline" onclick="loadNews()" style="font-size:11px;padding:4px 10px;">↻ Refresh</button>
+        </div>
+        <div id="news-feed">
+          <div class="news-loading">Loading news feeds…</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="card" style="margin-bottom:16px;">
+          <div class="section-title">2025–2026 Architecture Trends</div>
+          <div id="trends-list">
+            <div class="trend-item"><div class="trend-num">01</div><div class="trend-text"><h4>AI-Powered Threat Detection</h4><p>ML models integrated into SOC workflows for real-time anomaly detection and response automation.</p></div></div>
+            <div class="trend-item"><div class="trend-num">02</div><div class="trend-text"><h4>Zero Trust Maturity Models</h4><p>Organizations advancing from identity-centric ZT to full network/data segmentation maturity.</p></div></div>
+            <div class="trend-item"><div class="trend-num">03</div><div class="trend-text"><h4>Secure by Design (CISA)</h4><p>Regulatory push for vendors to embed security into product lifecycle from inception.</p></div></div>
+            <div class="trend-item"><div class="trend-num">04</div><div class="trend-text"><h4>Quantum-Resistant Cryptography</h4><p>NIST PQC standards finalized — migration planning now critical for long-lived systems.</p></div></div>
+            <div class="trend-item"><div class="trend-num">05</div><div class="trend-text"><h4>Cloud-Native Security Posture</h4><p>CNAPP platforms unifying CSPM, CWPP, and CIEM for unified cloud risk visibility.</p></div></div>
+          </div>
+        </div>
+
+        <div class="card card-sm">
+          <div class="section-title">Quick Reference</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;">
+            <span class="tag tag-blue" style="cursor:pointer" onclick="openGuide('nist')">NIST CSF 2.0</span>
+            <span class="tag tag-green" style="cursor:pointer" onclick="openGuide('nist')">NIST RMF</span>
+            <span class="tag tag-purple" style="cursor:pointer" onclick="openGuide('sabsa')">SABSA</span>
+            <span class="tag tag-amber" style="cursor:pointer" onclick="openGuide('sabsa')">TOGAF 10</span>
+            <span class="tag tag-slate" style="cursor:pointer" onclick="openGuide('zerotrust')">Zero Trust</span>
+            <span class="tag tag-red" style="cursor:pointer" onclick="openGuide('zerotrust')">SASE</span>
+            <span class="tag tag-blue" style="cursor:pointer" onclick="openGuide('cloud')">CSA CCM</span>
+            <span class="tag tag-green" style="cursor:pointer" onclick="openGuide('cloud')">AWS Well-Arch</span>
+            <span class="tag tag-purple" style="cursor:pointer" onclick="openGuide('cloud')">CIS Benchmarks</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── LIBRARY ── -->
+  <div class="page" id="page-library">
+    <div class="page-header">
+      <h2>Resource Library</h2>
+      <p>Curated reading list organized by framework and domain</p>
+    </div>
+    <div class="search-bar">
+      <span>🔍</span>
+      <input type="text" placeholder="Search resources…" oninput="filterResources(this.value)" id="search-input">
+    </div>
+    <div id="library-content"></div>
+  </div>
+
+  <!-- ── GUIDE READER ── -->
+  <div class="page" id="page-guide">
+    <button class="back-btn" onclick="showPage('library', document.querySelector('[onclick*=library]'))">← Back to Library</button>
+    <div id="guide-content"></div>
+  </div>
+
+  <!-- ── PROGRESS ── -->
+  <div class="page" id="page-progress">
+    <div class="page-header">
+      <h2>Study Progress</h2>
+      <p>Track your learning milestones across frameworks</p>
+    </div>
+    <div style="margin-bottom:20px;" class="card">
+      <div class="section-title">Overall Progress</div>
+      <div class="progress-bar-wrap"><div class="progress-bar" id="overall-bar" style="width:0%"></div></div>
+      <div style="font-size:12px;color:var(--text-muted);margin-top:8px;" id="overall-label">0 of 20 topics completed</div>
+    </div>
+    <div id="progress-list" style="display:flex;flex-direction:column;gap:10px;"></div>
+  </div>
+
+  <!-- ── TOGAF EXPLORER ── -->
+  <div class="page" id="page-togaf">
+    <div class="page-header">
+      <h2>TOGAF ADM Explorer</h2>
+      <p>Interactive Architecture Development Method — click any phase to explore security linkages</p>
+    </div>
+
+    <div style="display:flex;gap:8px;margin-bottom:20px;">
+      <button class="btn btn-primary" id="btn-adm" onclick="setTogafView('adm')">⬡ ADM Wheel</button>
+      <button class="btn btn-outline" id="btn-graph" onclick="setTogafView('graph')">⬡ Control Linkage Graph</button>
+      <button class="btn btn-outline" id="btn-matrix" onclick="setTogafView('matrix')">⬡ Framework Matrix</button>
+    </div>
+
+    <div id="togaf-adm" style="display:flex;gap:20px;align-items:flex-start;">
+      <div class="card" style="flex:0 0 480px;padding:16px;display:flex;justify-content:center;">
+        <svg id="adm-svg" width="448" height="448" viewBox="0 0 448 448"></svg>
+      </div>
+      <div class="card" id="phase-detail" style="flex:1;min-height:448px;">
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--text-muted);text-align:center;padding:20px;">
+          <div style="font-size:48px;margin-bottom:12px;">🏗️</div>
+          <p style="font-size:14px;">Click any phase on the ADM wheel<br>to explore security architecture linkages</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="togaf-graph" style="display:none;">
+      <div class="card" style="padding:16px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+          <div>
+            <div class="section-title" style="margin:0">Security Capability Linkage Graph</div>
+            <p style="font-size:12px;color:var(--text-muted);margin-top:3px;">Hover nodes to highlight connections · Click to pin details</p>
+          </div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;">
+            <span style="font-size:11px;display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:50%;background:#3b82f6;display:inline-block"></span>Identity</span>
+            <span style="font-size:11px;display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:50%;background:#10b981;display:inline-block"></span>Detection</span>
+            <span style="font-size:11px;display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:50%;background:#f59e0b;display:inline-block"></span>Network</span>
+            <span style="font-size:11px;display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:50%;background:#8b5cf6;display:inline-block"></span>Data</span>
+            <span style="font-size:11px;display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:50%;background:#ef4444;display:inline-block"></span>Governance</span>
+          </div>
+        </div>
+        <canvas id="linkage-canvas" width="900" height="520" style="width:100%;border-radius:8px;background:#f8f9fb;cursor:pointer;"></canvas>
+        <div id="node-detail" style="margin-top:12px;padding:12px;background:var(--accent-light);border-radius:8px;display:none;border:1px solid #bfdbfe;">
+          <h4 id="node-name" style="font-size:14px;font-weight:700;color:#1d4ed8;"></h4>
+          <p id="node-desc" style="font-size:13px;color:#1e40af;margin-top:4px;"></p>
+          <div id="node-tags" style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="togaf-matrix" style="display:none;">
+      <div class="card">
+        <div class="section-title">Framework Integration Matrix — TOGAF ADM × SABSA × NIST CSF × Controls</div>
+        <div style="overflow-x:auto;">
+          <table id="matrix-table" style="width:100%;border-collapse:collapse;font-size:12px;min-width:800px;"></table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── NOTES ── -->
+  <div class="page" id="page-notes">
+    <div class="page-header">
+      <h2>My Notes</h2>
+      <p>All annotations saved across resources</p>
+    </div>
+    <div id="notes-list">
+      <div style="color:var(--text-muted);font-size:14px;padding:20px 0;">No notes yet. Add notes from the Library resources.</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══ GUIDE CONTENT — rendered from Markdown at build time ═══ -->
+<div style="display:none">
+  {renderedGuides.map(({ id, Content }) => (
+    <div id={`guide-data-${id}`}>
+      <Content />
+    </div>
+  ))}
+</div>
+
+<script is:inline src="/js/data.js"></script>
+<script is:inline src="/js/utils.js"></script>
+<script is:inline src="/js/nav.js"></script>
+<script is:inline src="/js/library.js"></script>
+<script is:inline src="/js/notes.js"></script>
+<script is:inline src="/js/progress.js"></script>
+<script is:inline src="/js/news.js"></script>
+<script is:inline src="/js/togaf.js"></script>
+<script is:inline src="/js/app.js"></script>
+
+</body>
+</html>
