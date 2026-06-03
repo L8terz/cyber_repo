@@ -16,50 +16,83 @@ const renderedGuides = await Promise.all(
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Security Architecture Hub</title>
+  <title>SecArch Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
 
+<!-- ═══════════════════════════════ HEADER ═══════════════════════════════ -->
+<header id="top-header">
+  <div class="header-left">
+    <button class="hamburger" onclick="toggleSidebar()" aria-label="Toggle sidebar">
+      <span class="ham-line"></span>
+      <span class="ham-line"></span>
+      <span class="ham-line"></span>
+    </button>
+    <div class="logo">
+      <span class="logo-icon">⬡</span>
+      <span class="logo-text">SecArch Hub</span>
+      <span class="logo-breadcrumb" id="header-breadcrumb">/ Dashboard</span>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="search-pill">
+      <span class="search-icon">🔍</span>
+      <input type="text" placeholder="Search everything…" readonly>
+      <kbd class="header-kbd">⌘K</kbd>
+    </div>
+    <div class="header-avatar">J</div>
+  </div>
+</header>
+
+<div id="app-body">
+
 <!-- ═══════════════════════════════ SIDEBAR ═══════════════════════════════ -->
 <div id="sidebar">
-  <div id="sidebar-header">
-    <h1>🔐 SecArch Hub</h1>
-    <p>Security Architecture Library</p>
-  </div>
-  <nav>
-    <div class="nav-section">Main</div>
-    <div class="nav-item active" onclick="showPage('dashboard', this)">
-      <span class="icon">📊</span> Dashboard
-    </div>
-    <div class="nav-item" onclick="showPage('library', this)">
-      <span class="icon">📚</span> Library
-    </div>
-    <div class="nav-item" onclick="showPage('progress', this)">
-      <span class="icon">✅</span> Study Progress
-    </div>
-    <div class="nav-item" onclick="showPage('notes', this)">
-      <span class="icon">📝</span> My Notes
-    </div>
+  <div id="sidebar-inner">
+    <nav>
+      <div class="nav-section">Main</div>
+      <div class="nav-item active" onclick="showPage('dashboard', this)">
+        <span class="icon">◈</span> Dashboard
+      </div>
+      <div class="nav-item" onclick="showPage('library', this)">
+        <span class="icon">◈</span> Library
+      </div>
+      <div class="nav-item" onclick="showPage('progress', this)">
+        <span class="icon">◈</span> Study Progress
+      </div>
+      <div class="nav-item" onclick="showPage('notes', this)">
+        <span class="icon">◈</span> My Notes
+      </div>
 
-    <div class="nav-section">Frameworks</div>
-    <div class="nav-item" onclick="showPage('togaf', this)">
-      <span class="icon">🏗️</span> TOGAF Explorer
+      <div class="nav-section">Frameworks</div>
+      <div class="nav-item" onclick="showPage('togaf', this)">
+        <span class="icon">◈</span> TOGAF Explorer
+      </div>
+      <div class="nav-item" onclick="openGuide('nist')">
+        <span class="icon">◈</span> NIST CSF / RMF
+      </div>
+      <div class="nav-item" onclick="openGuide('sabsa')">
+        <span class="icon">◈</span> SABSA / TOGAF Guide
+      </div>
+      <div class="nav-item" onclick="openGuide('zerotrust')">
+        <span class="icon">◈</span> Zero Trust / SASE
+      </div>
+      <div class="nav-item" onclick="openGuide('cloud')">
+        <span class="icon">◈</span> Cloud Security
+      </div>
+
+      <div class="nav-section">New</div>
+      <div class="nav-item" onclick="showPage('architect', this)">
+        <span class="icon">◈</span> Cyber Sec Architect
+        <span class="nav-new">NEW</span>
+      </div>
+    </nav>
+    <div id="sidebar-footer">
+      <p>Last updated <span id="last-updated">—</span></p>
     </div>
-    <div class="nav-item" onclick="openGuide('nist')">
-      <span class="icon">🏛️</span> NIST CSF / RMF
-    </div>
-    <div class="nav-item" onclick="openGuide('sabsa')">
-      <span class="icon">📐</span> SABSA / TOGAF Guide
-    </div>
-    <div class="nav-item" onclick="openGuide('zerotrust')">
-      <span class="icon">🔒</span> Zero Trust / SASE
-    </div>
-    <div class="nav-item" onclick="openGuide('cloud')">
-      <span class="icon">☁️</span> Cloud Security
-    </div>
-  </nav>
-  <div id="sidebar-footer">
-    <p>Last updated <span id="last-updated">—</span></p>
   </div>
 </div>
 
@@ -74,24 +107,24 @@ const renderedGuides = await Promise.all(
     </div>
 
     <div class="grid-4" style="margin-bottom:20px;">
-      <div class="stat-card">
+      <div class="stat-card accent-cyan">
         <div class="stat-label">Frameworks</div>
-        <div class="stat-value" style="color:var(--accent)">4</div>
+        <div class="stat-value">4</div>
         <div class="stat-sub">Core domains covered</div>
       </div>
-      <div class="stat-card">
+      <div class="stat-card accent-green">
         <div class="stat-label">Resources</div>
-        <div class="stat-value" style="color:var(--green)" id="resource-count">28</div>
+        <div class="stat-value" id="resource-count">28</div>
         <div class="stat-sub">Curated references</div>
       </div>
-      <div class="stat-card">
+      <div class="stat-card accent-indigo">
         <div class="stat-label">Study Progress</div>
-        <div class="stat-value" style="color:var(--purple)" id="progress-pct">0%</div>
+        <div class="stat-value" id="progress-pct">0%</div>
         <div class="stat-sub">Topics completed</div>
       </div>
-      <div class="stat-card">
+      <div class="stat-card accent-amber">
         <div class="stat-label">Notes Saved</div>
-        <div class="stat-value" style="color:var(--amber)" id="notes-count">0</div>
+        <div class="stat-value" id="notes-count">0</div>
         <div class="stat-sub">Annotations made</div>
       </div>
     </div>
@@ -240,7 +273,18 @@ const renderedGuides = await Promise.all(
     </div>
   </div>
 
-</div>
+  <!-- ── CYBER SECURITY ARCHITECT ── -->
+  <div class="page" id="page-architect">
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;padding:40px;">
+      <div style="width:52px;height:52px;border-radius:12px;background:#f0f9ff;border:1px solid #bae6fd;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:16px;">🛡️</div>
+      <h2 style="font-size:20px;font-weight:800;color:var(--text);margin-bottom:8px;">Cyber Security Architect</h2>
+      <p style="font-size:14px;color:var(--text-muted);max-width:360px;line-height:1.6;">This section is coming soon. Foundation is set — ready to build out.</p>
+    </div>
+  </div>
+
+</div><!-- #main -->
+
+</div><!-- #app-body -->
 
 <!-- ═══ GUIDE CONTENT — rendered from Markdown at build time ═══ -->
 <div style="display:none">
