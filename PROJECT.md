@@ -3,7 +3,9 @@
 ## Purpose
 A personal security architecture study hub built with [Astro](https://astro.build). Covers NIST CSF/RMF, SABSA/TOGAF, Zero Trust/SASE, and Cloud Security. Push to `main` and GitHub Actions deploys automatically to GitHub Pages.
 
-**Live site:** https://L8terz.github.io/cyber_repo
+**Live site:** https://l8terz.github.io/cyber_repo
+**GitHub repo:** https://github.com/L8terz/cyber_repo
+**Local project:** `~/Documents/jase_claude_project/cyber/`
 
 ---
 
@@ -18,66 +20,84 @@ A personal security architecture study hub built with [Astro](https://astro.buil
 - TOGAF Explorer with 3 interactive views: ADM wheel (SVG), Control Linkage force graph (Canvas), Framework Matrix
 - Embedded guide content for NIST, SABSA/TOGAF, Zero Trust/SASE, Cloud Security
 
-### Session 2 — Modular Refactor + Astro Migration
-- **Modular refactor:** broke 1600-line monolith into separated CSS and JS modules (`assets/css/styles.css`, `assets/js/*.js`)
+### Session 2 — Modular Refactor + Astro Migration + GitHub Live
+- **Modular refactor:** broke 1600-line monolith into separated CSS and JS modules
 - **Astro migration:** converted project to Astro static site generator
   - Guide content moved from embedded raw HTML → clean **Markdown files** (`src/content/guides/`)
   - Astro renders Markdown to HTML at build time — no runtime fetch needed
   - All JS logic preserved unchanged in `public/js/`
-  - GitHub Actions workflow added for automatic deploy on every push to `main`
+  - GitHub Actions workflow added (`deploy.yml`) — auto-deploys on every push to `main`
   - Node.js installed via Homebrew to support Astro build tooling
-- **GitHub:** repo live at `https://github.com/L8terz/cyber_repo`
+- **Bug fixed:** JS asset paths were malformed (`/cyber_repojs/`) due to missing slash separator between `BASE_URL` and `js/` — fixed in `src/pages/index.astro`
+- **GitHub Pages:** source set to "GitHub Actions" in repo Settings → Pages
+- **Site confirmed live** at https://l8terz.github.io/cyber_repo ✅
 
 ---
 
 ## Project Structure
 ```
-cyber_repo/
+cyber/
 ├── src/
 │   ├── pages/
-│   │   └── index.astro          # Main app shell — sidebar, all pages, imports guides
+│   │   └── index.astro              # Main app shell — sidebar, all pages, imports guides
 │   ├── content/
-│   │   └── guides/              # ← EDIT GUIDES HERE (plain Markdown)
-│   │       ├── nist.md          # NIST CSF / RMF guide
-│   │       ├── sabsa.md         # SABSA / TOGAF guide
-│   │       ├── zerotrust.md     # Zero Trust / SASE guide
-│   │       └── cloud.md         # Cloud Security guide
+│   │   └── guides/                  # ← EDIT GUIDE CONTENT HERE (plain Markdown)
+│   │       ├── nist.md              # NIST CSF / RMF guide
+│   │       ├── sabsa.md             # SABSA / TOGAF guide
+│   │       ├── zerotrust.md         # Zero Trust / SASE guide
+│   │       └── cloud.md             # Cloud Security guide
 │   ├── styles/
-│   │   └── global.css           # All CSS (variables, layout, components)
+│   │   └── global.css               # All CSS (variables, layout, components)
 │   └── content/
-│       └── config.ts            # Content collection schema
+│       └── config.ts                # Content collection schema
 ├── public/
-│   └── js/                      # Client-side JavaScript (loaded as-is)
-│       ├── data.js              # All data: LIBRARY_DATA, STUDY_TOPICS, ADM phases, etc.
-│       ├── utils.js             # Helpers: escHtml, fmtDate
-│       ├── nav.js               # showPage, openGuide
-│       ├── library.js           # renderLibrary, filterResources
-│       ├── notes.js             # saveNote, renderNotes, clearNote
-│       ├── progress.js          # renderProgress, toggleProgress, updateStats
-│       ├── news.js              # loadNews (RSS via rss2json API)
-│       ├── togaf.js             # ADM wheel, force graph, matrix table
-│       └── app.js               # Bootstrap init
-├── astro.config.mjs             # site + base configured for L8terz/cyber_repo
+│   └── js/                          # Client-side JavaScript (loaded as-is)
+│       ├── data.js                  # ← ADD RESOURCES + STUDY TOPICS HERE
+│       ├── utils.js                 # Helpers: escHtml, fmtDate
+│       ├── nav.js                   # showPage, openGuide
+│       ├── library.js               # renderLibrary, filterResources
+│       ├── notes.js                 # saveNote, renderNotes, clearNote
+│       ├── progress.js              # renderProgress, toggleProgress, updateStats
+│       ├── news.js                  # loadNews (RSS via rss2json API)
+│       ├── togaf.js                 # ADM wheel, force graph, matrix table
+│       └── app.js                   # Bootstrap init
+├── astro.config.mjs                 # site + base configured for L8terz/cyber_repo
 ├── package.json
 └── .github/
     └── workflows/
-        └── deploy.yml           # Auto-deploy to GitHub Pages on every push to main
+        └── deploy.yml               # Auto-deploy to GitHub Pages on every push to main
+```
+
+---
+
+## How Guides Work
+Each guide in the sidebar is powered by a Markdown file in `src/content/guides/`. Astro converts the Markdown to HTML at build time and injects it into the page. The `openGuide()` JavaScript function reads it at runtime — so the site stays fast with no server needed.
+
+**Markdown is just plain text with simple formatting:**
+```md
+## Section Heading
+
+Regular paragraph text here.
+
+| Column 1 | Column 2 |
+|---|---|
+| Row data | Row data |
+
+- Bullet point
+- Another point
+
+> This is a callout/tip box
 ```
 
 ---
 
 ## How to Update Content
 
-### Edit a guide (most common task)
-Open any file in `src/content/guides/` and edit the Markdown directly:
-- `## Heading` for sections
-- `| Col | Col |` for tables
-- `- item` for bullet lists
-- `> text` for callout/tip blocks
-- `**bold**` for emphasis
+### Edit an existing guide
+Open the relevant file in `src/content/guides/` in VS Code and edit the Markdown. Save, commit, push — live in ~60 seconds.
 
-### Add a new guide
-1. Create `src/content/guides/newguide.md` with this frontmatter:
+### Add a brand new guide
+1. Create `src/content/guides/newguide.md`:
    ```md
    ---
    title: Your Guide Title
@@ -87,22 +107,22 @@ Open any file in `src/content/guides/` and edit the Markdown directly:
 
    # Your content here...
    ```
-2. Add a nav item in `src/pages/index.astro`:
+2. Add a nav link in `src/pages/index.astro` (in the Frameworks section of the sidebar):
    ```html
    <div class="nav-item" onclick="openGuide('newguide')">
      <span class="icon">🔐</span> Your Guide Name
    </div>
    ```
-3. Commit and push — GitHub Actions builds and deploys automatically.
+3. Commit and push — done.
 
 ### Add a new library resource
-Open `public/js/data.js`, find `const LIBRARY_DATA`, and add to the relevant framework's `resources` array:
+Open `public/js/data.js`, find `const LIBRARY_DATA`, add to the relevant framework's `resources` array:
 ```js
 { id: 'unique-id', title: 'Resource Title', type: 'Guide|Paper|Official Doc|Reference', url: 'https://...', desc: 'Description.' }
 ```
 
 ### Add a new study topic
-Open `public/js/data.js`, find `const STUDY_TOPICS`, and append:
+Open `public/js/data.js`, find `const STUDY_TOPICS`, append:
 ```js
 { id: 't21', label: 'Topic description', framework: 'NIST|SABSA/TOGAF|Zero Trust|Cloud' }
 ```
@@ -114,39 +134,46 @@ Open `src/styles/global.css`. CSS variables (colours, spacing) are at the top un
 
 ## Everyday GitHub Workflow
 
-```bash
-# 1. Make your edits (guides, data, styles)
-# 2. In VS Code Source Control panel:
-#    - Click + to stage all changes
-#    - Type a commit message
-#    - Click Commit
-#    - Click Sync Changes (circular arrow)
-# That's it — GitHub Actions deploys within ~60 seconds
-```
+In VS Code Source Control panel:
+1. Make your edits
+2. Click **+** to stage all changes
+3. Type a commit message
+4. Click **Commit**
+5. Click **Sync Changes** (circular arrow)
 
-Or via terminal:
-```bash
-git add .
-git commit -m "Your message here"
-git push
-```
+GitHub Actions builds and deploys automatically — check progress at:
+https://github.com/L8terz/cyber_repo/actions
 
 ---
 
 ## Local Development
 
 ```bash
+# Navigate to project folder
+cd ~/Documents/jase_claude_project/cyber
+
 npm install        # first time only
 npm run dev        # live preview at http://localhost:4321
-npm run build      # test production build (GitHub Actions does this automatically)
+npm run build      # test production build locally
 ```
+
+> Node.js installed via Homebrew. If `npm` not found, run: `export PATH="/opt/homebrew/bin:$PATH"`
 
 ---
 
 ## Technical Notes
 
-### How guides work
-Markdown files in `src/content/guides/` are rendered to HTML at **build time** by Astro. The rendered HTML is injected into hidden `<div id="guide-data-*">` elements. The `openGuide()` JS function reads these divs at runtime — same behaviour as before, but the source is now clean Markdown instead of raw HTML.
+### Script path fix (important context)
+In `src/pages/index.astro`, JS files are loaded using:
+```astro
+<script is:inline src={`${import.meta.env.BASE_URL}/js/data.js`}></script>
+```
+The explicit `/` between `BASE_URL` and `js/` is intentional — Astro's `BASE_URL` has no trailing slash when `base` is set to `/cyber_repo`, so without it paths render as `/cyber_repojs/data.js` (broken).
+
+### How the TOGAF Explorer works
+- **ADM Wheel** — SVG drawn by `togaf.js`, click segments to see security architect role per phase
+- **Control Linkage Graph** — Canvas-based force-directed graph, runs `requestAnimationFrame` loop while active
+- **Framework Matrix** — HTML table built dynamically from `MATRIX_DATA` in `data.js`
 
 ### localStorage keys
 | Key | Contents |
@@ -154,12 +181,8 @@ Markdown files in `src/content/guides/` are rendered to HTML at **build time** b
 | `secarch_notes` | `{ resourceId: "note text" }` |
 | `secarch_progress` | `{ topicId: true }` |
 
-### News feeds (via rss2json.com free API)
-Defined in `public/js/data.js` under `RSS_FEEDS`. Add or remove feeds there. Requires internet connection; fails gracefully if offline.
-
-### Known constraints
-- The force graph runs a continuous `requestAnimationFrame` loop while the Control Linkage view is active
-- `fetch()` on `file://` protocol is blocked — not an issue since the site is served via GitHub Pages
+### News feeds
+Defined in `public/js/data.js` under `RSS_FEEDS`. Requires internet; fails gracefully offline.
 
 ---
 
@@ -175,10 +198,10 @@ Defined in `public/js/data.js` under `RSS_FEEDS`. Add or remove feeds there. Req
 
 ## Planned / Future Improvements
 - [ ] Add more framework domains (ISO 27001, SOC 2, PCI-DSS, MITRE ATT&CK)
+- [ ] Add a threat modelling guide (STRIDE, PASTA, LINDDUN)
+- [ ] Add a glossary page (common security architecture terms and acronyms)
 - [ ] Add search across guide content
 - [ ] Bookmarking / favourites for library resources
 - [ ] Export notes to PDF or markdown
-- [ ] Add a glossary page (common security architecture terms and acronyms)
 - [ ] Expand TOGAF control linkage graph with more capability nodes
-- [ ] Add a threat modelling reference section (STRIDE, PASTA, LINDDUN)
 - [ ] Dark mode toggle
