@@ -332,3 +332,66 @@ body {
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+
+/* ── Sidebar Overlay (mobile) ── */
+#sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 48px 0 0 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 99;
+  cursor: pointer;
+}
+#sidebar-overlay.visible { display: block; }
+
+/* ── Mobile (≤768px) ── */
+@media (max-width: 768px) {
+
+  /* Sidebar becomes a fixed overlay that slides in from the left */
+  #sidebar {
+    position: fixed;
+    top: 48px;
+    left: 0;
+    height: calc(100vh - 48px);
+    z-index: 100;
+    width: 220px;
+    transform: translateX(0);
+    transition: transform .2s ease;
+  }
+  #sidebar.collapsed {
+    width: 220px;
+    transform: translateX(-220px);
+  }
+
+  /* #main fills the full width since sidebar is out of flow */
+  #app-body { position: relative; }
+
+  /* Page padding: tighter on mobile */
+  .page { padding: 20px 16px; }
+
+  /* Grids: 2-col stat grid, single-col content grids */
+  .grid-4 { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+
+  /* Resource cards: single column */
+  .resource-grid { grid-template-columns: 1fr; }
+
+  /* TOGAF ADM: stack vertically, let SVG/canvas scroll */
+  #togaf-adm { flex-direction: column !important; align-items: stretch; }
+  #adm-svg { width: 100% !important; height: auto !important; }
+  #linkage-canvas { height: 320px !important; }
+
+  /* Header: hide breadcrumb to save space */
+  .logo-breadcrumb { display: none; }
+
+  /* Guide tables: horizontal scroll on small screens */
+  #guide-content table { display: block; overflow-x: auto; }
+}
+
+/* ── Small mobile (≤480px) ── */
+@media (max-width: 480px) {
+  .search-pill { display: none; }
+  .page { padding: 14px 12px; }
+  .stat-value { font-size: 24px; }
+  .page-header h2 { font-size: 18px; }
+}

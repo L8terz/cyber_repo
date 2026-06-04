@@ -1,8 +1,20 @@
 function toggleSidebar() {
-  document.getElementById('sidebar').classList.toggle('collapsed');
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebar-overlay');
+  sidebar.classList.toggle('collapsed');
+  if (overlay) overlay.classList.toggle('visible', !sidebar.classList.contains('collapsed') && window.innerWidth <= 768);
+}
+
+function _closeSidebarMobile() {
+  if (window.innerWidth <= 768) {
+    document.getElementById('sidebar').classList.add('collapsed');
+    const overlay = document.getElementById('sidebar-overlay');
+    if (overlay) overlay.classList.remove('visible');
+  }
 }
 
 function showPage(id, el) {
+  _closeSidebarMobile();
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.getElementById('page-' + id).classList.add('active');
@@ -25,6 +37,7 @@ function showPage(id, el) {
 }
 
 function openGuide(id) {
+  _closeSidebarMobile();
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-guide').classList.add('active');
